@@ -38,3 +38,22 @@ exports.filterProducts = async (filter, skip, limit, sort) => {
 exports.countProducts = async (filter) => {
   return await Product.countDocuments(filter);
 };
+
+exports.updateRating = async (productId, newRating) => {
+  const product = await Product.findById(productId);
+
+  if (!product) {
+    throw new AppError("Product not found");
+  }
+
+  const { average, count } = product.rating || { average: 0, count: 0 };
+
+  const updatedAverage = (average * count + newRating) / (count + 1);
+
+  product.rating.average = Number(updatedAverage.toFixed(1));
+  product.rating.count = count + 1;
+
+  await product.save();
+
+  return product.rating;
+};

@@ -42,7 +42,16 @@ const createProductSchema = z.object({
 
 const updateProductSchema = createProductSchema.partial(); // For PATCH or PUT
 
+const updateRatingSchema = z.object({
+  productId: z.string().length(24, "Invalid product ID"),
+  rating: z
+    .number()
+    .min(1, "Rating must be at least 1")
+    .max(5, "Rating cannot be more than 5"),
+});
+
 module.exports = {
   createProductSchema,
   updateProductSchema,
+  updateRatingSchema,
 };

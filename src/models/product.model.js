@@ -12,6 +12,10 @@ const productSchema = new mongoose.Schema(
     brand: { type: String },
     isActive: { type: Boolean, default: true },
     image: { type: String }, // primary product image
+    rating: {
+      average: { type: Number, default: 0 },
+      count: { type: Number, default: 0 },
+    },
     variants: [
       {
         color: { type: String, required: true },
