@@ -5,6 +5,7 @@ const validate = require("../middlewares/validate.middleware");
 const {
   createProductSchema,
   updateProductSchema,
+  updateRatingSchema,
 } = require("../validators/product.schema");
 
 const upload = require("../middlewares/upload.middleware");
@@ -26,5 +27,10 @@ router.put(
 router.get("/", productController.getAll);
 router.get("/:id", productController.getOne);
 router.delete("/:id", productController.remove);
+router.post(
+  "/rate",
+  validate(updateRatingSchema),
+  productController.updateProductRating
+);
 
 module.exports = router;

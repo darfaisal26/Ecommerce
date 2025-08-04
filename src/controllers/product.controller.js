@@ -111,3 +111,10 @@ exports.getAll = expressAsyncHandler(async (req, res) => {
     products,
   });
 });
+
+exports.updateProductRating = expressAsyncHandler(async (req, res) => {
+  const { productId, rating } = req.body;
+  const updatedRating = await productService.updateRating(productId, rating);
+  console.log(updatedRating, "updateeee");
+  res.status(200).json({ message: "Rating updated", rating: updatedRating });
+});
