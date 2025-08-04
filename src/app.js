@@ -2,8 +2,9 @@ const express = require("express");
 const morgan = require("morgan");
 const app = express();
 const path = require("path");
-
+const logMiddleware = require("../logServer");
 // Middlewares
+app.use(logMiddleware);
 app.use(morgan("dev"));
 app.use(express.json());
 
