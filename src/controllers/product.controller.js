@@ -2,11 +2,22 @@ const expressAsyncHandler = require("express-async-handler");
 const productService = require("../services/product.services");
 
 exports.create = expressAsyncHandler(async (req, res) => {
-  const image = req.file ? `/uploads/products/${req.file.filename}` : undefined;
+  let imagePath;
 
+  if (req.file) {
+    imagePath = `/uploads/products/${req.file.filename}`;
+  } else if (req.body.image) {
+    const img = req.body.image;
+    try {
+      new URL(img);
+      imagePath = img;
+    } catch {
+      return res.status(400).json({ error: "Invalid image URL" });
+    }
+  }
   const productData = {
     ...req.body,
-    image,
+    image: imagePath,
   };
 
   const product = await productService.createProduct(productData);
@@ -14,11 +25,24 @@ exports.create = expressAsyncHandler(async (req, res) => {
 });
 
 exports.update = expressAsyncHandler(async (req, res) => {
-  const image = req.file ? `/uploads/products/${req.file.filename}` : undefined;
+  // const image = req.file ? `/uploads/products/${req.file.filename}` : undefined;
 
+  let imagePath;
+
+  if (req.file) {
+    imagePath = `/uploads/products/${req.file.filename}`;
+  } else if (req.body.image) {
+    const img = req.body.image;
+    try {
+      new URL(img);
+      imagePath = img;
+    } catch {
+      return res.status(400).json({ error: "Invalid image URL" });
+    }
+  }
   const productData = {
     ...req.body,
-    ...(image && { image }),
+    ...(image && { image: imagePath }),
   };
 
   const product = await productService.updateProduct(
@@ -30,6 +54,7 @@ exports.update = expressAsyncHandler(async (req, res) => {
 
 exports.getOne = expressAsyncHandler(async (req, res) => {
   const product = await productService.getProductById(req.params.id);
+  console.log(product);
   res.json({ product });
 });
 
@@ -75,6 +100,8 @@ exports.getAll = expressAsyncHandler(async (req, res) => {
     productService.filterProducts(filter, skip, limit, sort),
     productService.countProducts(filter),
   ]);
+
+  // console.log(products, products.variants, total);
 
   res.json({
     total,
