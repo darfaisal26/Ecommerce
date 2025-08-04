@@ -7,7 +7,7 @@ exports.createProduct = async (data) => {
 };
 
 exports.getProductById = async (id) => {
-  const product = await Product.findById(id);
+  const product = await Product.findById(id).populate("category");
   if (!product) throw new AppError("Product not found", 404);
   return product;
 };
